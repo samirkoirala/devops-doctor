@@ -1,66 +1,57 @@
 # devops-doctor
 
+[![CI](https://github.com/samirkoirala/devops-doctor/actions/workflows/ci.yml/badge.svg)](https://github.com/samirkoirala/devops-doctor/actions/workflows/ci.yml)
+[![Go Reference](https://pkg.go.dev/badge/github.com/samirkoirala/devops-doctor.svg)](https://pkg.go.dev/github.com/samirkoirala/devops-doctor)
+
 A small **Go** CLI that inspects your machine and toolchain: **system** health, **nginx**, **Docker**, **Docker Compose**, and **Kubernetes**. It prints clear pass/warn/fail lines with actionable suggestions.
+
+## Community
+
+| | |
+| --- | --- |
+| **Issues** | [Report bugs & ideas](https://github.com/samirkoirala/devops-doctor/issues) |
+| **Contributing** | [CONTRIBUTING.md](CONTRIBUTING.md) |
+| **Security** | [SECURITY.md](SECURITY.md) · [private advisory](https://github.com/samirkoirala/devops-doctor/security/advisories/new) |
+| **Code of conduct** | [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) |
+| **Releases** | [GitHub Releases](https://github.com/samirkoirala/devops-doctor/releases) |
 
 ## Requirements
 
-- Go **1.22+** (to build)
-- Optional runtime tools checked by the CLI: `nginx`, `docker`, `docker compose`, `kubectl`, `curl`, `ping`, `dig`/`nslookup`/`getent`, `df`, `lsof`/`ss`, `pgrep`, `tail`
+- Go **1.22+** (to build or `go install`)
+- Optional tools exercised by checks: `nginx`, `docker`, `docker compose`, `kubectl`, `curl`, `ping`, `dig` / `nslookup` / `getent`, `df`, `lsof` / `ss`, `pgrep`, `tail`
 
 ## Install
 
-From the repository root:
+### From source (this repo)
 
 ```bash
+git clone https://github.com/samirkoirala/devops-doctor.git
+cd devops-doctor
 go build -o devops-doctor ./cmd/devops-doctor
-sudo mv devops-doctor /usr/local/bin/   # optional
+# optional: sudo mv devops-doctor /usr/local/bin/
 ```
 
-Or install directly with Go (public repo or after configuring **private** access below):
+### With `go install` (public module)
 
 ```bash
-go install github.com/samirkoirala/devops-doctor/cmd/devops-doctor@v0.0.1
-# or: @latest
+go install github.com/samirkoirala/devops-doctor/cmd/devops-doctor@latest
+# or pin: @v0.0.1
 ```
 
-The binary is installed to **`$(go env GOPATH)/bin`** (often `~/go/bin`). If you see `command not found`, add that directory to your **`PATH`** (zsh):
+The binary is installed to **`$(go env GOPATH)/bin`** (often `~/go/bin`). If you see `command not found`, add it to your **`PATH`** (zsh example):
 
 ```bash
 echo 'export PATH="$PATH:$(go env GOPATH)/bin"' >> ~/.zshrc && source ~/.zshrc
 ```
 
-### Private GitHub repo (`go install` fails with sumdb / HTTPS / “terminal prompts disabled”)
+### Private fork / mirror
 
-You need **both** steps below. On **zsh**, quote the value so `*` is not treated as a glob (`zsh: no matches found`).
-
-**1. Mark the module as private** (skips the public proxy and checksum DB):
+If you vendor this module in a **private** GitHub org, you may need `GOPRIVATE` and Git over SSH. See the [Go FAQ on private modules](https://go.dev/doc/faq#git_https). On **zsh**, quote the value so `*` is not globbed:
 
 ```bash
-go env -w 'GOPRIVATE=github.com/samirkoirala/*'
-
-# or without wildcards:
-go env -w 'GOPRIVATE=github.com/samirkoirala/devops-doctor'
-
-go env GOPRIVATE GONOSUMDB GONOPROXY
-```
-
-**2. Force Git to clone `github.com` over SSH:**
-
-```bash
+go env -w 'GOPRIVATE=github.com/your-org/*'
 git config --global url."git@github.com:".insteadOf "https://github.com/"
-git config --global --get-regexp '^url\..*github'
 ```
-
-**3. If install still uses HTTPS**, clear the module cache once and retry:
-
-```bash
-go clean -modcache
-go install github.com/samirkoirala/devops-doctor/cmd/devops-doctor@v0.0.1
-```
-
-Ensure `ssh -T git@github.com` succeeds. If you must use HTTPS instead, use a [personal access token](https://go.dev/doc/faq#git_https) in `.netrc` or credential helper; the SSH `insteadOf` line is usually simpler on macOS.
-
-(Adjust the module path if you publish under a different import path.)
 
 ## Usage
 
@@ -88,7 +79,7 @@ Exit code **1** if any check returned **error** status (warnings do not fail the
 | **Compose** | Compose file discovery, `docker compose ps`, unhealthy/restarting/exited containers, published ports, log scan for `error` / `failed` / `crash` |
 | **Kubernetes** | `kubectl` client, current context, cluster reachability, nodes, problematic pods (e.g. CrashLoopBackOff, Pending, image pull errors) |
 
-Commands use **timeouts** (default **25s** per invocation via `context`) and run independent check groups **in parallel** where practical.
+Commands use **timeouts** (default **25s** per command via `context`) and run independent check groups **in parallel** where practical.
 
 ## Example output
 
@@ -179,4 +170,4 @@ pkg/utils/             # Command execution with timeouts
 
 ## License
 
-MIT (add a `LICENSE` file if you publish the project).
+[MIT](LICENSE)
