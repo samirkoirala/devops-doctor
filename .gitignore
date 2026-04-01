@@ -1,0 +1,5 @@
+/devops-doctor
+/bin/
+dist/
+*.exe
+.DS_Store
