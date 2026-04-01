@@ -23,6 +23,12 @@ go install github.com/samirkoirala/devops-doctor/cmd/devops-doctor@v0.0.1
 # or: @latest
 ```
 
+The binary is installed to **`$(go env GOPATH)/bin`** (often `~/go/bin`). If you see `command not found`, add that directory to your **`PATH`** (zsh):
+
+```bash
+echo 'export PATH="$PATH:$(go env GOPATH)/bin"' >> ~/.zshrc && source ~/.zshrc
+```
+
 ### Private GitHub repo (`go install` fails with sumdb / HTTPS / “terminal prompts disabled”)
 
 You need **both** steps below. On **zsh**, quote the value so `*` is not treated as a glob (`zsh: no matches found`).
