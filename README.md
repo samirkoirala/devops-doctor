@@ -25,38 +25,30 @@ go install github.com/samirkoirala/devops-doctor/cmd/devops-doctor@v0.0.1
 
 ### Private GitHub repo (`go install` fails with sumdb / HTTPS / “terminal prompts disabled”)
 
-You need **both** of the following. If you only set Git and skip `GOPRIVATE`, you will still see `sum.golang.org` **404**. If you only set `GOPRIVATE` and Git still uses HTTPS, you will see **terminal prompts disabled**.
+You need **both** steps below. On **zsh**, quote the value so `*` is not treated as a glob (`zsh: no matches found`).
 
 **1. Mark the module as private** (skips the public proxy and checksum DB):
 
 ```bash
-go env -w GOPRIVATE=github.com/samirkoirala/*
+go env -w 'GOPRIVATE=github.com/samirkoirala/*'
 
-# confirm (must be non-empty for this path):
+# or without wildcards:
+go env -w 'GOPRIVATE=github.com/samirkoirala/devops-doctor'
+
 go env GOPRIVATE GONOSUMDB GONOPROXY
 ```
 
-**2. Force Git to use SSH for `github.com`** (so `go` never clones over HTTPS):
+**2. Force Git to clone `github.com` over SSH:**
 
 ```bash
 git config --global url."git@github.com:".insteadOf "https://github.com/"
-
-# confirm:
 git config --global --get-regexp '^url\..*github'
 ```
 
-**3. If you still get HTTPS / cached errors**, drop the old module/VCS cache and retry:
+**3. If install still uses HTTPS**, clear the module cache once and retry:
 
 ```bash
 go clean -modcache
-go install github.com/samirkoirala/devops-doctor/cmd/devops-doctor@v0.0.1
-```
-
-`go clean -modcache` removes **all** downloaded modules; only run it if the install keeps failing.
-
-Then install:
-
-```bash
 go install github.com/samirkoirala/devops-doctor/cmd/devops-doctor@v0.0.1
 ```
 
