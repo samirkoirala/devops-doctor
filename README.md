@@ -35,7 +35,7 @@ go build -o devops-doctor ./cmd/devops-doctor
 
 ```bash
 go install github.com/samirkoirala/devops-doctor/cmd/devops-doctor@latest
-# or pin: @v0.0.1
+# or pin: @v0.1.0
 ```
 
 The binary is installed to **`$(go env GOPATH)/bin`** (often `~/go/bin`). If you see `command not found`, add it to your **`PATH`** (zsh example):

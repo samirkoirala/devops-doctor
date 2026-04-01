@@ -17,7 +17,7 @@ devops-doctor check …
 ## Environment
 
 - **OS**: e.g. macOS 15, Ubuntu 24.04
-- **devops-doctor version**: e.g. `v0.0.1` or `go install …@main`
+- **devops-doctor version**: e.g. `v0.1.0` or `go install …@main`
 - **Go version** (if built locally): `go version`
 
 ## Output
