@@ -16,11 +16,32 @@ go build -o devops-doctor ./cmd/devops-doctor
 sudo mv devops-doctor /usr/local/bin/   # optional
 ```
 
-Or install directly with Go:
+Or install directly with Go (public repo or after configuring **private** access below):
 
 ```bash
-go install github.com/samirkoirala/devops-doctor/cmd/devops-doctor@latest
+go install github.com/samirkoirala/devops-doctor/cmd/devops-doctor@v0.0.1
+# or: @latest
 ```
+
+### Private GitHub repo (`go install` fails with sumdb / HTTPS / “terminal prompts disabled”)
+
+Tell Go not to use the public proxy or checksum DB for your module, and make Git clone over **SSH** (same keys you use for `git@github.com:`):
+
+```bash
+# once per machine (or add GOPRIVATE to your shell profile)
+go env -w GOPRIVATE=github.com/samirkoirala/*
+
+# use SSH instead of HTTPS for GitHub (once --global is fine)
+git config --global url."git@github.com:".insteadOf "https://github.com/"
+```
+
+Then retry:
+
+```bash
+go install github.com/samirkoirala/devops-doctor/cmd/devops-doctor@v0.0.1
+```
+
+Ensure `ssh -T git@github.com` succeeds. If you must use HTTPS instead, use a [personal access token](https://go.dev/doc/faq#git_https) in `.netrc` or credential helper; the SSH `insteadOf` line is usually simpler on macOS.
 
 (Adjust the module path if you publish under a different import path.)
 
